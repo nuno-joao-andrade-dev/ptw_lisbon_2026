@@ -2,6 +2,11 @@
 
 A 90-minute hands-on workshop building a **100% local, zero-retention AI Investment Committee ("VC Brain")** in **Node.js (ES Modules)** and **React** powered by **Gemma 4 (`gemma4:e2b`)** running on your **Local Ollama Server (`http://127.0.0.1:11434`)**.
 
+> - **📦 Workshop GitHub Repository:** [https://github.com/nuno-joao-andrade-dev/ptw_lisbon_2026](https://github.com/nuno-joao-andrade-dev/ptw_lisbon_2026)
+> - **📊 Interactive Presentation Slides:** [`slides/index.html`](./slides/index.html) (`npm run slides`)
+> - **📝 Full Technical Blog Walkthrough:** [`ARTICLE.md`](./ARTICLE.md)
+> - **🇵🇹 Special Thanks:** A special thank you to **[Portugal Tech Week](https://portugaltechweek.com/)**, **[Kátia Sidorenko](https://www.linkedin.com/in/sidorina-katerenko/)**, and **[Laura Andrade](https://www.linkedin.com/in/lauraandrade2025/)** for the warm invitation, organization, and support in making this hands-on session in Lisbon possible!
+
 ---
 
 ## 1. Prerequisites & One-Time Setup
