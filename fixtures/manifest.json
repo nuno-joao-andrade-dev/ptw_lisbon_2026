@@ -1,0 +1,70 @@
+{
+  "fixture_01_roast": {
+    "id": "fixture_01_roast",
+    "startupName": "QuantumSynergy.ai",
+    "founderName": "Alex Crypto",
+    "stage": "Step 1 (00-15m Live Roast)",
+    "audioFile": "fixtures/fixture_01_roast/pitch_20s.wav",
+    "durationSeconds": 18.84,
+    "spokenTranscript": "Hello Portugal Tech Week! I am the founder of Quantum Synergy AI. We are building an autonomous quantum agentic blockchain swarm for hyper scale enterprises. Our revolutionary web four flywheel is already generating two point four million dollars in annual recurring revenue with zero percent churn and a one hundred X moat. We are raising five million dollars today!",
+    "slides": [
+      {
+        "file": "fixtures/fixture_01_roast/slide_1.png",
+        "title": "Q3 Financial & Traction Audit",
+        "defaultBudget": 1120
+      }
+    ]
+  },
+  "fixture_02_sprint": {
+    "id": "fixture_02_sprint",
+    "startupName": "CloudMetrics Pro",
+    "founderName": "Marco Silva",
+    "stage": "Steps 2-4 (Sprints 1-3 Lab)",
+    "audioFile": "fixtures/fixture_02_sprint/pitch_30s.wav",
+    "durationSeconds": 28.08,
+    "spokenTranscript": "Hi investors, we are Cloud Metrics Pro. Small and medium businesses waste thirty percent of their cloud budget on idle containers. Our automated FinOps platform cuts cloud waste in five minutes with zero code changes. We are scaling fast at one point two million dollars in net new annual recurring revenue with an elite one point zero X burn multiple! We are targeting a massive fifty billion dollar bottom up total addressable market across one hundred thousand SMB customers, and raising three million dollars to scale go to market.",
+    "slides": [
+      {
+        "file": "fixtures/fixture_02_sprint/slide_1.png",
+        "title": "Title & Hook Layout",
+        "defaultBudget": 280
+      },
+      {
+        "file": "fixtures/fixture_02_sprint/slide_2.png",
+        "title": "Unit Economics & TAM Table",
+        "defaultBudget": 1120
+      },
+      {
+        "file": "fixtures/fixture_02_sprint/slide_3.png",
+        "title": "Architecture & GTM Wall of Text",
+        "defaultBudget": 1120
+      }
+    ]
+  },
+  "fixture_03_clean": {
+    "id": "fixture_03_clean",
+    "startupName": "VeraGrid Energy",
+    "founderName": "Ines Costa",
+    "stage": "Step 5 (Clean Benchmark)",
+    "audioFile": "fixtures/fixture_03_clean/pitch_30s.wav",
+    "durationSeconds": 30.58,
+    "spokenTranscript": "Hello everyone, I am the CEO of Vera Grid Energy. Industrial solar microgrids lose eighteen percent of generated power due to load imbalances. Vera Grid's edge controller balances grid loads in real time. In the last twelve months we added one point eight million dollars in net new ARR while burning just one hundred twenty thousand dollars per month, giving us a zero point eight X burn multiple. With fifty thousand industrial sites at ten thousand dollars annual contract value, we target a five hundred million dollar market and are raising a one point five million dollar seed round.",
+    "slides": [
+      {
+        "file": "fixtures/fixture_03_clean/slide_1.png",
+        "title": "Overview & Value Prop",
+        "defaultBudget": 280
+      },
+      {
+        "file": "fixtures/fixture_03_clean/slide_2.png",
+        "title": "Audited Unit Economics & TAM",
+        "defaultBudget": 1120
+      },
+      {
+        "file": "fixtures/fixture_03_clean/slide_3.png",
+        "title": "$1.5M Seed Round Ask",
+        "defaultBudget": 280
+      }
+    ]
+  }
+}

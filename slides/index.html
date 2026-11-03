@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portugal Tech Week 2026 — Build a Multimodal Pitch &amp; Deck Critic with Gemma 4 (Nuno João Andrade)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Nunito:wght@400;600;700;800&family=Poppins:wght@500;600&family=Sofia+Sans:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* Official Portugal Tech Week Brand Palette — Adapted for Crisp White Slides */
+      --ptw-white: #FFFFFF;
+      --ptw-canvas: #F0F4FA;
+      --ptw-subtle: #F8FAFC;
+      --ptw-dark: #131313;
+      --ptw-navy: #0F0D30;
+      --ptw-deep: #08071A;
+      --ptw-blue: #283CC8;
+      --ptw-blue-light: #EEF2FF;
+      --ptw-sky: #4D9DE0;
+      --ptw-sky-light: #EBF5FF;
+      --ptw-orange: #F26419;
+      --ptw-orange-light: #FFF3EC;
+      --ptw-yellow: #F9E11B;
+      --ptw-gold: #FFC017;
+      --ptw-yellow-light: #FEFCE8;
+      --ptw-green: #61CE70;
+      --ptw-green-dark: #15803D;
+      --ptw-green-light: #ECFDF5;
+      --ptw-red: #FF3B5C;
+      --ptw-red-light: #FFF1F2;
+      --ptw-text: #131313;
+      --ptw-muted: #475569;
+      --ptw-border: #CBD5E1;
+
+      --font-display: "Sofia Sans", system-ui, sans-serif;
+      --font-ticker: "Poppins", system-ui, sans-serif;
+      --font-body: "Nunito", system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", monospace;
+
+      --shadow-sm: 0 2px 6px rgba(15, 13, 48, 0.06);
+      --shadow-md: 0 8px 24px rgba(40, 60, 200, 0.10);
+      --shadow-lg: 0 18px 46px rgba(15, 13, 48, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--ptw-canvas);
+      color: var(--ptw-text);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Decorative Portugal Tech Week Azulejo Pixel Frame */
+    .ptw-pixel-bar {
+      height: 8px;
+      width: 100%;
+      background-image: url('./assets/hero-frame.png');
+      background-size: cover;
+      background-position: center top;
+      flex-shrink: 0;
+    }
+
+    /* Official PTW White Sticky Deck Header (post-730.css) */
+    .deck-header {
+      height: 62px;
+      background: var(--ptw-white);
+      border-bottom: 2px solid var(--ptw-blue);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 10;
+      box-shadow: 0 4px 16px rgba(15, 13, 48, 0.06);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-left img.ptw-logo {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-divider {
+      width: 2px;
+      height: 24px;
+      background: var(--ptw-border);
+    }
+
+    .brand-workshop-title {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--ptw-dark);
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: var(--ptw-dark);
+    }
+
+    .speaker-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ptw-blue-light);
+      color: var(--ptw-blue);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-weight: 700;
+      border: 1px solid rgba(40, 60, 200, 0.25);
+      text-decoration: none;
+    }
+
+    .model-pill {
+      background: var(--ptw-navy);
+      color: var(--ptw-yellow);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      border: 1px solid var(--ptw-blue);
+    }
+
+    /* Slide Viewport */
+    .slide-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 42px;
+    }
+
+    /* White Background Slide with Official PTW Styling */
+    .slide {
+      display: none;
+      position: relative;
+      width: 100%;
+      max-width: 1320px;
+      height: 100%;
+      max-height: 760px;
+      background: #FFFFFF;
+      border: 2px solid var(--ptw-blue);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      padding: 36px 48px;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      animation: slideFadeIn 0.2s ease-out;
+      user-select: text;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    .slide > *:not(.ptw-watermark) {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Subtle Portuguese Azulejo Watermark on White Background */
+    .ptw-watermark {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .ptw-watermark img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: right bottom;
+    }
+
+    @keyframes slideFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PTW Eyebrow Badges */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 14px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+    .eyebrow.blue { background: var(--ptw-blue); color: #FFFFFF; }
+    .eyebrow.yellow { background: var(--ptw-yellow); color: var(--ptw-dark); border: 1px solid var(--ptw-dark); }
+    .eyebrow.orange { background: var(--ptw-orange); color: #FFFFFF; }
+    .eyebrow.sky { background: var(--ptw-sky); color: #FFFFFF; }
+    .eyebrow.green { background: var(--ptw-green); color: var(--ptw-dark); }
+    .eyebrow.red { background: var(--ptw-red); color: #FFFFFF; }
+
+    /* PTW Display Typography (Sofia Sans) */
+    h1 {
+      font-family: var(--font-display);
+      font-size: 2.85rem;
+      line-height: 1.02;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.015em;
+      color: var(--ptw-dark);
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 2.15rem;
+      line-height: 1.08;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--ptw-dark);
+      margin-bottom: 8px;
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--ptw-dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    p.lead {
+      font-size: 1.12rem;
+      line-height: 1.5;
+      color: var(--ptw-muted);
+      max-width: 980px;
+      font-weight: 600;
+    }
+
+    .text-blue { color: var(--ptw-blue); }
+    .text-orange { color: var(--ptw-orange); }
+    .text-sky { color: var(--ptw-sky); }
+    .text-green { color: var(--ptw-green-dark); }
+    .text-red { color: var(--ptw-red); }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: stretch;
+      margin: 12px 0;
+    }
+
+    .grid-speaker {
+      display: grid;
+      grid-template-columns: 330px minmax(0, 1fr);
+      gap: 28px;
+      align-items: stretch;
+      margin: 14px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin: 12px 0;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 12px 0;
+    }
+
+    /* Cards on White Slide Canvas */
+    .card {
+      background: #FFFFFF;
+      border: 2px solid var(--ptw-border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s ease;
+    }
+    .card.border-blue { border-color: var(--ptw-blue); border-top: 5px solid var(--ptw-blue); }
+    .card.border-sky { border-color: var(--ptw-sky); border-top: 5px solid var(--ptw-sky); }
+    .card.border-orange { border-color: var(--ptw-orange); border-top: 5px solid var(--ptw-orange); }
+    .card.border-yellow { border-color: var(--ptw-gold); border-top: 5px solid var(--ptw-gold); background: var(--ptw-yellow-light); }
+    .card.border-green { border-color: var(--ptw-green); border-top: 5px solid var(--ptw-green); }
+    .card.border-red { border-color: var(--ptw-red); border-top: 5px solid var(--ptw-red); }
+
+    .card p, .card li {
+      font-size: 0.95rem;
+      line-height: 1.48;
+      color: var(--ptw-muted);
+    }
+
+    .card ul {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* Official PTW Azulejo Tile Icon Header */
+    .tile-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    /* Workshop Disclaimer Callout Banner on Slides */
+    .disclaimer-strip {
+      background: var(--ptw-yellow-light);
+      border: 2px solid var(--ptw-gold);
+      border-left: 6px solid var(--ptw-orange);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.92rem;
+      color: var(--ptw-dark);
+      margin-top: 10px;
+    }
+
+    /* PTW Palace Navy Code Window (#0F0D30) */
+    .code-window {
+      background: var(--ptw-navy);
+      color: #F8FAFC;
+      border: 2px solid var(--ptw-blue);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font-mono);
+    }
+
+    .code-header {
+      background: var(--ptw-deep);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--ptw-sky);
+      border-bottom: 1px solid var(--ptw-blue);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .window-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .window-dots span:nth-child(1) { background: var(--ptw-red); }
+    .window-dots span:nth-child(2) { background: var(--ptw-gold); }
+    .window-dots span:nth-child(3) { background: var(--ptw-green); }
+
+    .code-body {
+      padding: 14px 16px;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .code-body .kw { color: #4D9DE0; font-weight: 600; }
+    .code-body .fn { color: #F9E11B; }
+    .code-body .str { color: #61CE70; }
+    .code-body .cmt { color: #94A3B8; font-style: italic; }
+    .code-body .typ { color: #FF7400; }
+
+    /* Bottom Action / Command Bar inside Slide (PTW Style) */
+    .cmd-bar {
+      background: var(--ptw-navy);
+      color: #FFFFFF;
+      border: 2px solid var(--ptw-blue);
+      border-radius: 10px;
+      padding: 11px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .cmd-bar-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .cmd-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Official PTW Button (#283CC8 -> #F9E11B on hover, 5px radius) */
+    .cmd-btn {
+      background: var(--ptw-blue);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 16px;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background 0.25s ease, color 0.25s ease, transform 0.15s ease;
+    }
+    .cmd-btn:hover {
+      background: var(--ptw-yellow);
+      color: var(--ptw-dark);
+      transform: scale(1.03);
+    }
+    .cmd-btn.yellow {
+      background: var(--ptw-yellow);
+      color: var(--ptw-dark);
+    }
+    .cmd-btn.yellow:hover {
+      background: #FFFFFF;
+      color: var(--ptw-blue);
+    }
+
+    /* Architecture Flow Nodes */
+    .arch-diagram {
+      background: var(--ptw-subtle);
+      border: 2px solid var(--ptw-blue);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .arch-node {
+      background: #FFFFFF;
+      border: 2px solid var(--ptw-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+      flex: 1;
+      box-shadow: var(--shadow-sm);
+    }
+    .arch-node.blue { border-color: var(--ptw-blue); background: var(--ptw-blue-light); }
+    .arch-node.sky { border-color: var(--ptw-sky); background: var(--ptw-sky-light); }
+    .arch-node.orange { border-color: var(--ptw-orange); background: var(--ptw-orange-light); }
+    .arch-node.yellow { border-color: var(--ptw-gold); background: var(--ptw-yellow-light); }
+    .arch-node.green { border-color: var(--ptw-green); background: var(--ptw-green-light); }
+
+    .arch-node strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--ptw-dark);
+      margin-bottom: 2px;
+    }
+    .arch-node span {
+      font-size: 0.75rem;
+      color: var(--ptw-muted);
+      font-family: var(--font-mono);
+    }
+    .arch-arrow {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--ptw-blue);
+      flex-shrink: 0;
+    }
+
+    /* Tables */
+    .ptw-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 8px;
+      background: #FFFFFF;
+      border: 2px solid var(--ptw-blue);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .ptw-table th {
+      background: var(--ptw-blue);
+      color: #FFFFFF;
+      font-family: var(--font-display);
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+    }
+    .ptw-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--ptw-border);
+      color: var(--ptw-dark);
+    }
+    .ptw-table tr:nth-child(even) td {
+      background: var(--ptw-subtle);
+    }
+
+    .badge-inline {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      background: var(--ptw-blue-light);
+      padding: 2px 7px;
+      border-radius: 4px;
+      color: var(--ptw-blue);
+      font-weight: 600;
+      border: 1px solid rgba(40, 60, 200, 0.2);
+    }
+
+    /* Speaker Profile Photo Card */
+    .speaker-profile-box {
+      background: linear-gradient(180deg, var(--ptw-navy) 0%, #192266 100%);
+      color: #FFFFFF;
+      border: 2px solid var(--ptw-blue);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-md);
+    }
+
+    .speaker-avatar-wrap {
+      position: relative;
+      width: 152px;
+      height: 152px;
+      margin-bottom: 10px;
+    }
+
+    .speaker-avatar-wrap img.main-photo {
+      width: 152px;
+      height: 152px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--ptw-yellow);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .speaker-avatar-wrap img.badge-avatar {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 3px solid #FFFFFF;
+      object-fit: cover;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    /* Speaker Notes Drawer */
+    .speaker-notes-drawer {
+      position: fixed;
+      bottom: 54px;
+      left: 0;
+      right: 0;
+      background: var(--ptw-navy);
+      color: #FFFFFF;
+      border-top: 3px solid var(--ptw-yellow);
+      padding: 18px 48px;
+      z-index: 30;
+      display: none;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
+    }
+    .speaker-notes-drawer.open {
+      display: block;
+    }
+    .speaker-notes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ptw-yellow);
+      font-weight: 800;
+    }
+    .speaker-notes-content {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #E2E8F0;
+      max-width: 1200px;
+    }
+
+    /* Deck Footer Bar */
+    .deck-footer {
+      height: 54px;
+      background: var(--ptw-white);
+      border-top: 2px solid var(--ptw-blue);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 280px;
+    }
+    .progress-bar-bg {
+      flex: 1;
+      height: 7px;
+      background: var(--ptw-canvas);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--ptw-border);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--ptw-blue);
+      width: 0%;
+      transition: width 0.2s ease;
+    }
+    .slide-counter {
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--ptw-dark);
+      min-width: 58px;
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      background: var(--ptw-white);
+      border: 2px solid var(--ptw-blue);
+      color: var(--ptw-blue);
+      padding: 5px 14px;
+      border-radius: 5px;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      background: var(--ptw-yellow);
+      border-color: var(--ptw-dark);
+      color: var(--ptw-dark);
+    }
+
+    /* Copy Toast Notification */
+    .copy-toast {
+      position: fixed;
+      top: 76px;
+      right: 32px;
+      background: var(--ptw-navy);
+      color: var(--ptw-yellow);
+      border: 2px solid var(--ptw-yellow);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 800;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: all 0.2s ease;
+      z-index: 100;
+    }
+    .copy-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Portugal Tech Week Azulejo Pixel Strip -->
+  <div class="ptw-pixel-bar"></div>
+
+  <!-- Official Portugal Tech Week White Header Bar -->
+  <header class="deck-header">
+    <div class="brand-left">
+      <img src="./assets/ptw-logo-black.png" alt="Portugal Tech Week" class="ptw-logo" />
+      <div class="brand-divider"></div>
+      <span class="brand-workshop-title">Multimodal Pitch &amp; Deck Critic • Gemma 4 + Local Ollama</span>
+    </div>
+    <div class="header-meta">
+      <a href="https://www.linkedin.com/in/nuno-andrade-964b2416" target="_blank" rel="noreferrer" class="speaker-pill" title="Connect with Nuno João Andrade on LinkedIn">
+        <span>👤 Nuno João Andrade</span>
+      </a>
+      <span class="model-pill">ollama / gemma4:e2b</span>
+    </div>
+  </header>
+
+  <!-- Copy Toast -->
+  <div id="copyToast" class="copy-toast">✅ Copied command to clipboard!</div>
+
+  <!-- Main Slide Viewport -->
+  <main class="slide-viewport">
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 1: TITLE SLIDE                                               -->
+    <!-- ================================================================== -->
+    <section class="slide active" data-notes="Welcome to Portugal Tech Week 2026! In this 90-minute hands-on workshop, we will build a 100% local AI Investment Committee & Pitch Critic powered by Gemma 4 (gemma4:e2b) and Local Ollama. Remember: this tool is an educational workshop guide to help you better pitch your project—not a real competition or investment committee result!">
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+          <div class="eyebrow blue">🇵🇹 Portugal Tech Week • 6–15 NOV 2026 • Hands-On Workshop</div>
+          <div class="eyebrow yellow">Building Vision • Shaping The Future</div>
+        </div>
+
+        <h1>
+          Build a Multimodal <span class="text-blue">Pitch &amp; Deck Critic</span><br/>
+          with <span class="text-orange">Gemma 4</span> &amp; Local Ollama
+        </h1>
+        <p class="lead">
+          Turn your laptop into a ruthless, 100% private AI Investment Committee that listens to a <strong>30-second spoken elevator pitch (16kHz WAV)</strong>, inspects <strong>slide deck visuals (280 vs 1,120 vision tokens)</strong>, catches cross-modal contradictions, and verifies unit economics with deterministic tools.
+        </p>
+
+        <div class="grid-3" style="margin-top: 18px;">
+          <div class="card border-sky">
+            <h3><img src="./assets/tile-sky.svg" alt="" class="tile-icon" /> Native Audio Ingestion</h3>
+            <p>Feed raw <strong>16kHz 16-bit mono PCM WAV</strong> audio directly into <span class="badge-inline">gemma4:e2b</span> with zero external Whisper ASR step.</p>
+          </div>
+          <div class="card border-orange">
+            <h3><img src="./assets/tile-orange.svg" alt="" class="tile-icon" /> Variable Vision Budgets</h3>
+            <p>Compare <strong>280 tokens</strong> (<span class="badge-inline">448×448</span> layout) vs. <strong>1,120 tokens</strong> (<span class="badge-inline">1120×1120</span> dense financial tables &amp; 8pt footnotes).</p>
+          </div>
+          <div class="card border-blue">
+            <h3><img src="./assets/tile-yellow.svg" alt="" class="tile-icon" /> Deterministic VC Tools</h3>
+            <p>4 native Ollama function calls (<span class="badge-inline">audit_unit_economics</span>, <span class="badge-inline">verify_tam_math</span>, density &amp; buzzword checks).</p>
+          </div>
+        </div>
+
+        <div class="disclaimer-strip">
+          <div>
+            <strong>⚠️ WORKSHOP GUIDE DISCLAIMER:</strong> This is an educational workshop and is <strong>just a guide to better pitch your project — this isn&apos;t the real result</strong>.
+          </div>
+          <span class="badge-inline">100% Local • Zero Cloud Retention</span>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">
+          <span>👤 Speaker: <strong style="color: var(--ptw-yellow)">Nuno João Andrade</strong> • Quick Pre-Flight Check:</span>
+        </div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('ollama pull gemma4:e2b')">📋 ollama pull gemma4:e2b</button>
+          <button class="cmd-btn" onclick="copyCmd('npm test')">📋 npm test</button>
+          <button class="cmd-btn" onclick="nextSlide()">Meet the Speaker ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 2: ABOUT THE SPEAKER — NUNO JOÃO ANDRADE                     -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Hi everyone, I'm Nuno João Andrade! I'm a Senior Developer, Cloud Platform Expert (GCP/AWS), and Google Developer Expert (GDE) for Cloud with over 10 years of experience designing high-volume distributed systems and AI architectures. Please feel free to connect with me on LinkedIn at www.linkedin.com/in/nuno-andrade-964b2416!">
+      <div>
+        <div class="eyebrow blue">👋 Meet Your Workshop Instructor</div>
+        <h2>Nuno João Andrade</h2>
+        <p class="lead">
+          Senior Developer &amp; Cloud Platform Expert (GCP / AWS) • <span class="text-blue">Google Developer Expert (GDE) for Cloud</span>
+        </p>
+
+        <div class="grid-speaker">
+          <!-- Left Column: Portrait Card & Direct LinkedIn Badge -->
+          <div class="speaker-profile-box">
+            <div class="speaker-avatar-wrap">
+              <img src="./assets/avatar_photo.jpeg" alt="Nuno João Andrade" class="main-photo" />
+              <img src="./assets/avatar.jpeg" alt="Nuno Andrade Avatar" class="badge-avatar" />
+            </div>
+
+            <div>
+              <div style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; text-transform: uppercase; color: #FFFFFF;">
+                Nuno João Andrade
+              </div>
+              <div style="font-family: var(--font-display); font-size: 0.88rem; font-weight: 700; color: var(--ptw-yellow); text-transform: uppercase; margin-top: 2px;">
+                Google Developer Expert • Cloud &amp; AI
+              </div>
+            </div>
+
+            <div style="width: 100%; background: rgba(8, 7, 26, 0.75); border: 1px solid var(--ptw-sky); border-radius: 8px; padding: 10px; margin-top: 10px; font-family: var(--font-mono); font-size: 0.74rem; color: #FFFFFF; word-break: break-all;">
+              <div style="color: var(--ptw-yellow); font-weight: 600; margin-bottom: 3px;">🔗 LINKEDIN PROFILE</div>
+              www.linkedin.com/in/nuno-andrade-964b2416
+            </div>
+          </div>
+
+          <!-- Right Column: Bio, Industry Sectors & Links -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 14px;">
+            <div class="card border-blue">
+              <h3><img src="./assets/tile-sky.svg" alt="" class="tile-icon" /> 10+ Years in Cloud Architecture &amp; High-Performance AI</h3>
+              <p>
+                Experienced Backend Developer and Cloud Architect with over a decade of expertise defining architectures, building, and migrating mission-critical systems to cloud and edge environments. Passionate about practical, production-grade AI agents and open-weights models (<span class="badge-inline">Gemma 4</span>, <span class="badge-inline">Gemini</span>, <span class="badge-inline">Google ADK</span>, <span class="badge-inline">Node.js</span>, <span class="badge-inline">C++</span>).
+              </p>
+            </div>
+
+            <div class="grid-2" style="margin: 0;">
+              <div class="card border-orange">
+                <h3><img src="./assets/tile-orange.svg" alt="" class="tile-icon" /> Core Industry Sectors</h3>
+                <ul>
+                  <li><strong>High-Volume Transaction Systems</strong></li>
+                  <li><strong>Energy Sector &amp; Smart Grids</strong></li>
+                  <li><strong>Gaming Industry Backends</strong></li>
+                  <li><strong>Computer Vision &amp; Multimodal AI</strong></li>
+                </ul>
+              </div>
+
+              <div class="card border-yellow">
+                <h3><img src="./assets/tile-yellow.svg" alt="" class="tile-icon" /> Connect &amp; Resources</h3>
+                <ul>
+                  <li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/nuno-andrade-964b2416" target="_blank" rel="noreferrer" style="color: var(--ptw-blue); font-weight: 700;">linkedin.com/in/nuno-andrade-964b2416</a></li>
+                  <li><strong>Blog &amp; Articles:</strong> <a href="https://nja.dev" target="_blank" rel="noreferrer" style="color: var(--ptw-blue); font-weight: 700;">https://nja.dev</a></li>
+                  <li><strong>GitHub:</strong> <span class="badge-inline">github.com/nuno-joao-andrade</span></li>
+                  <li><strong>Beyond Code:</strong> Openwater Swimmer 🏊‍♂️</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">
+          <span>🤝 Let&apos;s connect on LinkedIn: <strong style="color: var(--ptw-yellow)">www.linkedin.com/in/nuno-andrade-964b2416</strong></span>
+        </div>
+        <div class="cmd-buttons">
+          <a href="https://www.linkedin.com/in/nuno-andrade-964b2416" target="_blank" rel="noreferrer" class="cmd-btn yellow">🔗 Open LinkedIn Profile</a>
+          <button class="cmd-btn" onclick="copyCmd('https://www.linkedin.com/in/nuno-andrade-964b2416')">📋 Copy LinkedIn URL</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 3: WORKSHOP DISCLAIMER & THE PROBLEM WE SOLVE                -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="First, a crucial reminder: this workshop application is an educational guide to help founders practice and sharpen their pitch—it is NOT a real investment committee decision. Why did we build it? Because in real pitch meetings, founders often say one number out loud while their slide deck shows a completely different reality.">
+      <div>
+        <div class="eyebrow orange">⚠️ The Founder Pitch Challenge &amp; Workshop Purpose</div>
+        <h2>Audio-Visual <span class="text-orange">Cognitive Dissonance</span> in Startup Pitches</h2>
+        <p class="lead">
+          Why do 80% of early-stage pitches lose an Investment Committee in the first 30 seconds? Because <strong>spoken claims contradict visual slide evidence</strong>.
+        </p>
+
+        <div class="grid-2" style="margin-top: 16px;">
+          <div class="card border-red">
+            <h3>🎙️ What the Founder Says Out Loud (Audio)</h3>
+            <p><em>&ldquo;Our capital efficiency is best-in-class — our <strong>burn multiple is a rock-solid 1.0x</strong>, our <strong>LTV-to-CAC is 4.8x</strong>, and we are tackling a <strong>$90 billion bottom-up TAM</strong> across 150,000 mid-market companies paying $3,000 a year!&rdquo;</em></p>
+            <ul>
+              <li>Sounds confident, fast-paced, and investor-ready.</li>
+              <li>Text-only transcripts miss tone, pacing, and visual tables.</li>
+            </ul>
+          </div>
+
+          <div class="card border-blue">
+            <h3>📊 What Slide #2 Actually Shows (Visuals)</h3>
+            <p>When Gemma 4 inspects the financial table on Slide #2 at <strong>1,120 vision tokens</strong>:</p>
+            <ul>
+              <li><strong>Net New ARR:</strong> <span class="badge-inline">$1.2M</span> vs. <strong>Monthly Burn:</strong> <span class="badge-inline">$350K/mo ($4.2M/yr)</span> ➔ <strong>Actual Burn Multiple = 3.50x!</strong></li>
+              <li><strong>Bottom-Up TAM Math:</strong> <span class="badge-inline">150,000 × $3,000 = $450M</span> (<strong>200x inflation</strong> vs. $90B claim!).</li>
+              <li><strong>8pt Footnote:</strong> Excludes $190K/mo AWS GPU cluster costs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="disclaimer-strip">
+          <div>
+            <strong>🎯 PURPOSE OF THIS WORKSHOP:</strong> This tool is <strong>just a guide to better pitch your project — this isn&apos;t the real result</strong>. Use it to catch discrepancies in your own deck before you step on stage!
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">💡 Why Local AI? Founders won&apos;t upload stealth financial decks to third-party cloud APIs!</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn" onclick="nextSlide()">See the Local Architecture ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 4: ARCHITECTURE OVERVIEW — GEMMA 4 + LOCAL OLLAMA            -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Everything in our workshop runs 100% locally via Ollama at http://127.0.0.1:11434 using gemma4:e2b. Why gemma4:e2b? Because on attendee laptops, gemma4:e2b fits comfortably in ~5GB RAM while supporting native audio, vision, configurable thinking (<think>), and native tool calling!">
+      <div>
+        <div class="eyebrow sky">🏗️ System Architecture • 100% On-Device Privacy</div>
+        <h2>Gemma 4 (<span class="text-blue">gemma4:e2b</span>) + Local Ollama Pipeline</h2>
+        <p class="lead">
+          Zero cloud API keys, zero network latency spikes on conference Wi-Fi, and zero data retention.
+        </p>
+
+        <div class="arch-diagram" style="margin: 18px 0;">
+          <div class="arch-node sky">
+            <strong>1. Spoken Pitch (.WAV)</strong>
+            <span>16kHz 16-bit Mono PCM</span>
+          </div>
+          <div class="arch-arrow">+</div>
+          <div class="arch-node orange">
+            <strong>2. Deck Slides (.PNG)</strong>
+            <span>280 vs 1,120 Vision Tokens</span>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node blue">
+            <strong>3. Local Ollama Server</strong>
+            <span>127.0.0.1:11434 • gemma4:e2b</span>
+          </div>
+          <div class="arch-arrow">⇄</div>
+          <div class="arch-node yellow">
+            <strong>4. 4 VC Math Tools</strong>
+            <span>Deterministic Node.js</span>
+          </div>
+          <div class="arch-arrow">➔</div>
+          <div class="arch-node green">
+            <strong>5. Zod JSON Verdict</strong>
+            <span>Score + Contradictions + Roast</span>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card border-blue">
+            <h3>🧠 Configurable Thinking</h3>
+            <p>We enable <span class="badge-inline">think: true</span> on Ollama&apos;s <span class="badge-inline">/api/chat</span> endpoint so <span class="badge-inline">gemma4:e2b</span> plans its cross-modal audit inside <span class="badge-inline">message.thinking</span> before emitting JSON.</p>
+          </div>
+          <div class="card border-orange">
+            <h3>🖼️ Vision Budget Control</h3>
+            <p>In <span class="badge-inline">shared/visionBudget.js</span>, we use <span class="badge-inline">sharp</span> to map <strong>280 tokens</strong> (<span class="badge-inline">448×448</span>) vs. <strong>1,120 tokens</strong> (<span class="badge-inline">1120×1120</span>) before base64 encoding.</p>
+          </div>
+          <div class="card border-green">
+            <h3>🔒 Strict Zod Schemas</h3>
+            <p>In <span class="badge-inline">shared/schemas.js</span>, we convert Zod v4 schemas via <span class="badge-inline">z.toJSONSchema()</span> and pass them to Ollama&apos;s <span class="badge-inline">format</span> parameter.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">⚡ Shared Engine Location: <span style="color: var(--ptw-yellow); font-family: var(--font-mono);">shared/{client,audioUtils,visionBudget,tools,schemas}.js</span></div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn" onclick="nextSlide()">Environment Setup ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 5: SETUP — NODE.JS (v20+) & LOCAL OLLAMA (gemma4:e2b)        -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Let's verify our local setup. Everyone needs Node.js v20+ and Ollama running locally on port 11434 with gemma4:e2b pulled. If your laptop has 16GB+ RAM you can also test gemma4:e4b via OLLAMA_MODEL=gemma4:e4b, but gemma4:e2b is our fast default.">
+      <div>
+        <div class="eyebrow green">🛠️ Pre-Flight Setup • Node.js &amp; Local Ollama</div>
+        <h2>Setting Up <span class="text-blue">Node.js</span> &amp; <span class="text-orange">Ollama (gemma4:e2b)</span></h2>
+        <p class="lead">
+          All dependencies are modern, vulnerability-free ES Modules (<span class="badge-inline">0 vulnerabilities</span> on <span class="badge-inline">npm audit</span>).
+        </p>
+
+        <div class="grid-2" style="margin-top: 14px;">
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>1. Install Ollama &amp; Pull gemma4:e2b</span>
+            </div>
+            <div class="code-body"><span class="cmt"># Linux install:</span>
+curl -fsSL https://ollama.com/install.sh | sh
+
+<span class="cmt"># macOS (Homebrew) / Windows (winget):</span>
+brew install --cask ollama
+<span class="cmt"># or: winget install Ollama.Ollama</span>
+
+<span class="cmt"># Pull the multimodal Gemma 4 E2B model (~3.1 GB):</span>
+<span class="fn">ollama pull gemma4:e2b</span>
+
+<span class="cmt"># Verify local Ollama server (127.0.0.1:11434):</span>
+<span class="fn">ollama list</span></div>
+          </div>
+
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>2. Install Workshop Packages &amp; Run Tests</span>
+            </div>
+            <div class="code-body"><span class="cmt"># Ensure Node.js v20+ or v22 LTS is active:</span>
+node -v &amp;&amp; npm -v
+
+<span class="cmt"># Install root dependencies (0 vulnerabilities):</span>
+<span class="fn">npm install</span>
+
+<span class="cmt"># Run all 11 automated tests (audio, vision, tools, Ollama):</span>
+<span class="fn">npm test</span>
+
+<span class="cmt"># Optional: Override model or Ollama host anytime:</span>
+<span class="kw">export</span> OLLAMA_HOST=http://127.0.0.1:11434
+<span class="kw">export</span> OLLAMA_MODEL=gemma4:e2b</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">📋 Click to copy setup commands:</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('ollama pull gemma4:e2b')">📋 ollama pull gemma4:e2b</button>
+          <button class="cmd-btn" onclick="copyCmd('npm install && npm test')">📋 npm install &amp;&amp; npm test</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 6: WORKSHOP ROADMAP — 5 STEPS & 3 TEST FIXTURES              -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Here is our 90-minute roadmap. Every step is in its own self-contained folder (step-01-setup through step-05-arena). You simply cd into the step folder and run 'npm start'. We also pre-generated 3 complete test fixtures with 16kHz WAV audio and 1600x900 PNG slides.">
+      <div>
+        <div class="eyebrow blue">🗺️ 90-Minute Workshop Roadmap</div>
+        <h2>5 Self-Contained <span class="text-blue">Step Folders</span> &amp; <span class="text-orange">3 Pitch Fixtures</span></h2>
+        <p class="lead">
+          Every step is ready to run with <span class="badge-inline">cd step-0X-... &amp;&amp; npm start</span>. Pre-built test audio &amp; slides live in <span class="badge-inline">fixtures/</span>.
+        </p>
+
+        <table class="ptw-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Step Folder</th>
+              <th>Command</th>
+              <th>What You Will Experience &amp; Learn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>00–15m</strong></td>
+              <td><span class="badge-inline">step-01-setup/</span></td>
+              <td><code>cd step-01-setup &amp;&amp; npm start</code></td>
+              <td>Verify Local Ollama (<span class="badge-inline">gemma4:e2b</span>) + Run the 20s Live Pitch Roast on <em>QuantumSynergy.ai</em>.</td>
+            </tr>
+            <tr>
+              <td><strong>15–35m</strong></td>
+              <td><span class="badge-inline">step-02-narrative/</span></td>
+              <td><code>cd step-02-narrative &amp;&amp; npm start</code></td>
+              <td><strong>Sprint 1:</strong> Native <span class="badge-inline">16kHz</span> WAV ingestion + 5-beat Narrative Arc scoring with <span class="badge-inline">&lt;think&gt;</span> &amp; Zod JSON.</td>
+            </tr>
+            <tr>
+              <td><strong>35–55m</strong></td>
+              <td><span class="badge-inline">step-03-contradictions/</span></td>
+              <td><code>cd step-03-contradictions &amp;&amp; npm start</code></td>
+              <td><strong>Sprint 2:</strong> Cross-Modal Contradiction Detection + <strong>280 vs. 1,120 Vision Token Budget</strong> A/B test.</td>
+            </tr>
+            <tr>
+              <td><strong>55–75m</strong></td>
+              <td><span class="badge-inline">step-04-tools/</span></td>
+              <td><code>cd step-04-tools &amp;&amp; npm start</code></td>
+              <td><strong>Sprint 3:</strong> 4 Deterministic VC Tool Calls (<span class="badge-inline">audit_unit_economics</span>, <span class="badge-inline">verify_tam_math</span>, etc.) + IC Verdict.</td>
+            </tr>
+            <tr>
+              <td><strong>75–90m</strong></td>
+              <td><span class="badge-inline">step-05-arena/</span></td>
+              <td><code>cd step-05-arena &amp;&amp; npm start</code></td>
+              <td><strong>The Live Pitch Arena Finale:</strong> Full Portugal Tech Week Web UI (Record 30s Mic / Upload WAV + Slides).</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="grid-3" style="margin-top: 12px;">
+          <div class="card border-red" style="padding: 10px 14px;">
+            <strong style="font-family: var(--font-display); color: var(--ptw-red);">🔥 Fixture 1: QuantumSynergy.ai (20s)</strong>
+            <span style="font-size: 0.82rem; color: var(--ptw-muted);">Zero churn claim vs 18.4% slide churn • 11 buzzwords ➔ <strong>HARD PASS</strong></span>
+          </div>
+          <div class="card border-orange" style="padding: 10px 14px;">
+            <strong style="font-family: var(--font-display); color: var(--ptw-orange);">🧪 Fixture 2: CloudMetrics Pro (30s)</strong>
+            <span style="font-size: 0.82rem; color: var(--ptw-muted);">1.0x spoken burn vs 3.5x slide burn • 200x TAM inflation • 8pt footnote</span>
+          </div>
+          <div class="card border-green" style="padding: 10px 14px;">
+            <strong style="font-family: var(--font-display); color: var(--ptw-green-dark);">✅ Fixture 3: VeraGrid Energy (30s)</strong>
+            <span style="font-size: 0.82rem; color: var(--ptw-muted);">0.75x burn multiple • 6.0x LTV:CAC • Consistent math ➔ <strong>INVEST</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">🚀 Ready for Step 1? Let&apos;s roast our first pitch!</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('cd step-01-setup && npm start')">📋 cd step-01-setup &amp;&amp; npm start</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 7: STEP 1 (00-15m) — THE 20s ROAST & ARCHITECTURE SETUP      -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="In Step 1 (step-01-setup/index.js), we verify our connection to http://127.0.0.1:11434, confirm gemma4:e2b is available, normalize QuantumSynergy.ai's 20-second WAV pitch and slide_1.png, and watch the AI Investment Committee roast the contradictions live in the terminal!">
+      <div>
+        <div class="eyebrow red">🔥 Step 1 (00–15m) • step-01-setup/</div>
+        <h2>The 20-Second <span class="text-red">Pitch Roast</span> &amp; Health Check</h2>
+        <p class="lead">
+          File: <span class="badge-inline">step-01-setup/index.js</span> • Fixture: <span class="badge-inline">fixtures/fixture_01_roast/</span> (<em>QuantumSynergy.ai</em>)
+        </p>
+
+        <div class="grid-2" style="margin-top: 14px;">
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>step-01-setup/index.js</span>
+            </div>
+            <div class="code-body"><span class="cmt">// 1. Verify Local Ollama (http://127.0.0.1:11434)</span>
+<span class="kw">const</span> health = <span class="kw">await</span> <span class="fn">checkOllamaHealth</span>();
+
+<span class="cmt">// 2. Load 16kHz Mono PCM WAV + Slide 1 (1120 tokens)</span>
+<span class="kw">const</span> audio = <span class="fn">loadAndNormalizeWav</span>(fixture.audioPath);
+<span class="kw">const</span> slide1 = <span class="kw">await</span> <span class="fn">prepareSlideImage</span>(
+  fixture.slides[0].path,
+  <span class="fn">1120</span> <span class="cmt">// High-res vision budget</span>
+);
+
+<span class="cmt">// 3. Run full multimodal + tool-calling audit</span>
+<span class="kw">const</span> { verdict } = <span class="kw">await</span> <span class="fn">runFullPitchArenaPipeline</span>({
+  startupName: <span class="str">'QuantumSynergy.ai'</span>,
+  audioPath: fixture.audioPath,
+  slides: [{ path: fixture.slides[0].path, budget: <span class="fn">1120</span> }]
+});</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card border-red">
+              <h3>🎤 Spoken Claim vs. Slide #1 Reality</h3>
+              <ul>
+                <li><strong>Spoken @ 00:05:</strong> <em>&ldquo;Zero churn &amp; 4,200 enterprise pilots!&rdquo;</em></li>
+                <li><strong>Slide #1 Table:</strong> <span class="badge-inline">18.4% Monthly Logo Churn</span> &amp; <span class="badge-inline">3 Unpaid Design Partners</span> ($14.2K ARR).</li>
+                <li><strong>Spoken @ 00:11:</strong> <em>&ldquo;Infinite LTV!&rdquo;</em> vs. Slide <span class="badge-inline">$48.5K CAC / $9.2K LTV (0.19x)</span>.</li>
+              </ul>
+            </div>
+
+            <div class="card border-yellow">
+              <h3>🔥 Resulting IC Verdict: HARD PASS (Score: 12/100)</h3>
+              <p>
+                <strong>Tools Triggered:</strong> <span class="badge-inline">flag_buzzword_overload</span> catches 11 buzzwords in 19 seconds; <span class="badge-inline">audit_unit_economics</span> flags a <strong>164.8x annual burn multiple</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">▶️ Run Step 1 in your terminal:</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('cd step-01-setup && npm start')">📋 cd step-01-setup &amp;&amp; npm start</button>
+          <button class="cmd-btn" onclick="copyCmd('npm run step1')">📋 npm run step1</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 8: STEP 2 (15-35m) — SPRINT 1: NATIVE AUDIO & NARRATIVE      -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="In Sprint 1 (step-02-narrative), we focus on native audio ingestion and configurable thinking. We normalize the 30s WAV file to 16,000 Hz 16-bit mono PCM using wavefile, pass it to gemma4:e2b with think: true, and enforce NarrativeStructureSchema using Zod.">
+      <div>
+        <div class="eyebrow sky">🎙️ Step 2 (15–35m) • Sprint 1 • step-02-narrative/</div>
+        <h2>Native <span class="text-sky">16kHz Audio Ingestion</span> &amp; Narrative Arc Scoring</h2>
+        <p class="lead">
+          File: <span class="badge-inline">step-02-narrative/index.js</span> &amp; <span class="badge-inline">shared/audioUtils.js</span> • Scoring the 5 Pitch Beats (0–10)
+        </p>
+
+        <div class="grid-2" style="margin-top: 14px;">
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>shared/audioUtils.js + step-02-narrative/index.js</span>
+            </div>
+            <div class="code-body"><span class="cmt">// Normalize any .wav to 16kHz, 16-bit Mono PCM</span>
+<span class="kw">const</span> wav = <span class="kw">new</span> <span class="fn">WaveFile</span>(rawBuffer);
+wav.<span class="fn">toSampleRate</span>(<span class="fn">16000</span>);
+wav.<span class="fn">toBitDepth</span>(<span class="str">'16'</span>);
+
+<span class="cmt">// Call Local Ollama with thinking + Zod JSON Schema</span>
+<span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">ollamaChat</span>({
+  messages: [
+    { role: <span class="str">'system'</span>, content: NARRATIVE_SYSTEM_PROMPT },
+    { role: <span class="str">'user'</span>, content: prompt, audio: [audio.base64] }
+  ],
+  think: <span class="kw">true</span>,
+  format: <span class="fn">toOllamaJsonSchema</span>(NarrativeStructureSchema)
+});</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card border-sky">
+              <h3>📊 5 Scored Narrative Beats (<span class="badge-inline">shared/schemas.js</span>)</h3>
+              <ul>
+                <li><strong>1. Hook (0–10):</strong> Opening attention-grabber &amp; timestamp range.</li>
+                <li><strong>2. Problem (0–10):</strong> Customer pain clarity &amp; urgency.</li>
+                <li><strong>3. Solution (0–10):</strong> Product mechanism &amp; differentiation.</li>
+                <li><strong>4. Traction (0–10):</strong> ARR, growth &amp; unit economics claims.</li>
+                <li><strong>5. The Ask (0–10):</strong> Fundraising amount &amp; 18-month milestones.</li>
+              </ul>
+            </div>
+
+            <div class="card border-blue">
+              <h3>🧠 Why Enable <span class="badge-inline">think: true</span>?</h3>
+              <p>Gemma 4 segments the pitch timeline chronologically and evaluates vocal pacing (WPM) inside <span class="badge-inline">&lt;think&gt;</span> before committing to numeric scores.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">▶️ Run Sprint 1 (Narrative Structure Analyzer):</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('cd step-02-narrative && npm start')">📋 cd step-02-narrative &amp;&amp; npm start</button>
+          <button class="cmd-btn" onclick="copyCmd('npm run step2')">📋 npm run step2</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 9: DEEP DIVE — VARIABLE VISION TOKEN BUDGETS (280 vs 1120)   -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Before running Sprint 2, let's understand one of Gemma 4's most powerful engineering knobs: variable vision token budgets. Not every slide needs 1,120 tokens! Title slides only need 280 tokens (4x faster prefill), whereas dense financial tables with 8pt footnotes require 1,120 tokens.">
+      <div>
+        <div class="eyebrow orange">🖼️ Engineering Deep Dive • shared/visionBudget.js</div>
+        <h2>Variable Vision Token Budgets: <span class="text-blue">280</span> vs. <span class="text-orange">1,120 Tokens</span></h2>
+        <p class="lead">
+          Why waste 4× compute on a minimalist title slide—or lose critical 8pt financial footnotes by downsampling a dense table?
+        </p>
+
+        <div class="grid-2" style="margin-top: 14px;">
+          <div class="card border-blue">
+            <h3>⚡ 280 Vision Tokens (<span class="badge-inline">448×448 px</span> • Layout Mode)</h3>
+            <ul>
+              <li><strong>Best For:</strong> Title slides, hero value propositions, simple 3-bullet layouts (<em>Slide #1</em>).</li>
+              <li><strong>Latency &amp; KV Cache:</strong> <strong>~4× faster</strong> prefill and minimal RAM footprint on laptop GPUs/CPUs.</li>
+              <li><strong>Trade-off:</strong> Small 8pt fine-print footnotes blur below OCR legibility threshold!</li>
+            </ul>
+          </div>
+
+          <div class="card border-orange">
+            <h3>🔬 1,120 Vision Tokens (<span class="badge-inline">1120×1120 px</span> • Dense Mode)</h3>
+            <ul>
+              <li><strong>Best For:</strong> Financial tables, cohort retention charts, dense architecture diagrams (<em>Slide #2 &amp; #3</em>).</li>
+              <li><strong>High-Res OCR:</strong> Reads every cell in <em>CloudMetrics Pro</em> Slide #2 plus the 8pt bottom footnote:</li>
+              <li style="color: var(--ptw-orange); font-weight: 700;"><em>&ldquo;*Footnote: Spoken pitch figures exclude $190k/mo AWS GPU cluster costs and 4.2% monthly logo churn.&rdquo;</em></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-window" style="margin-top: 10px;">
+          <div class="code-header">
+            <div class="window-dots"><span></span><span></span><span></span></div>
+            <span>shared/visionBudget.js — Resizing Slide Images to Match Token Budgets</span>
+          </div>
+          <div class="code-body" style="padding: 10px 16px;"><span class="kw">export const</span> VISION_BUDGET_CONFIG = {
+  <span class="fn">280</span>:  { tokens: <span class="fn">280</span>,  targetDimension: <span class="fn">448</span>,  label: <span class="str">'LOW_280_LAYOUT'</span> },
+  <span class="fn">1120</span>: { tokens: <span class="fn">1120</span>, targetDimension: <span class="fn">1120</span>, label: <span class="str">'HIGH_1120_DENSE_OCR'</span> }
+};</div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">💡 In Step 3, we run an A/B comparison on Slide #2 at <strong>280</strong> vs <strong>1,120</strong> tokens!</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn" onclick="nextSlide()">Run Step 3 Contradiction Audit ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 10: STEP 3 (35-55m) — SPRINT 2: CONTRADICTION DETECTION      -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Now let's run Step 3 (cd step-03-contradictions && npm start). It runs a side-by-side experiment on Slide 2 at 280 tokens vs 1,120 tokens, and then performs a full cross-modal contradiction audit across the 30s spoken pitch and all 3 slides.">
+      <div>
+        <div class="eyebrow orange">⚡ Step 3 (35–55m) • Sprint 2 • step-03-contradictions/</div>
+        <h2>Cross-Modal <span class="text-orange">Contradiction Detection</span> (Audio × Slides)</h2>
+        <p class="lead">
+          File: <span class="badge-inline">step-03-contradictions/index.js</span> • Fixture: <span class="badge-inline">fixtures/fixture_02_sprint/</span> (<em>CloudMetrics Pro</em>)
+        </p>
+
+        <div class="grid-2" style="margin-top: 14px;">
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>step-03-contradictions/index.js</span>
+            </div>
+            <div class="code-body"><span class="cmt">// Part A: Compare 280 vs 1120 Vision Tokens on Slide 2</span>
+<span class="kw">const</span> slide2Low  = <span class="kw">await</span> <span class="fn">prepareSlideImage</span>(slide2Path, <span class="fn">280</span>);
+<span class="kw">const</span> slide2High = <span class="kw">await</span> <span class="fn">prepareSlideImage</span>(slide2Path, <span class="fn">1120</span>);
+
+<span class="cmt">// Part B: Full Multimodal Contradiction Audit</span>
+<span class="kw">const</span> response = <span class="kw">await</span> <span class="fn">ollamaChat</span>({
+  messages: [{
+    role: <span class="str">'user'</span>,
+    content: buildContradictionPrompt(startupName, slideMeta),
+    images: preparedSlides.map(s =&gt; s.base64),
+    audio: [audio.base64]
+  }],
+  think: <span class="kw">true</span>,
+  format: <span class="fn">toOllamaJsonSchema</span>(ContradictionAuditSchema)
+});</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="card border-red">
+              <h3>🚨 Contradiction #1: Burn Multiple Lie (<span class="badge-inline">FATAL_BS</span>)</h3>
+              <p><strong>Spoken @ 00:08:</strong> <em>&ldquo;Burn multiple is a rock-solid 1.0x&rdquo;</em><br/>
+              <strong>Slide #2 Evidence:</strong> $350K/mo burn ($4.2M/yr) ÷ $1.2M Net New ARR = <strong>3.50x burn multiple</strong>.</p>
+            </div>
+
+            <div class="card border-orange">
+              <h3>🚨 Contradiction #2: 200x TAM Inflation (<span class="badge-inline">FATAL_BS</span>)</h3>
+              <p><strong>Spoken @ 00:18:</strong> <em>&ldquo;$90B bottom-up TAM&rdquo;</em><br/>
+              <strong>Slide #2 Evidence:</strong> 150,000 customers × $3,000 ACV = <strong>$450M actual TAM</strong>.</p>
+            </div>
+
+            <div class="card border-yellow">
+              <h3>🚨 Contradiction #3: LTV:CAC Exaggeration (<span class="badge-inline">MAJOR</span>)</h3>
+              <p><strong>Spoken @ 00:13:</strong> <em>&ldquo;4.8x LTV:CAC&rdquo;</em> vs. <strong>Slide #2:</strong> $31,200 LTV ÷ $18,400 CAC = <strong>1.70x</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">▶️ Run Sprint 2 (Multimodal Contradictions &amp; Vision Budget A/B Test):</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('cd step-03-contradictions && npm start')">📋 cd step-03-contradictions &amp;&amp; npm start</button>
+          <button class="cmd-btn" onclick="copyCmd('npm run step3')">📋 npm run step3</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 11: DEEP DIVE — 4 DETERMINISTIC VC TOOLS ("BS DETECTOR")     -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Why do we need deterministic tools when Gemma 4 already sees the numbers? Because LLMs should extract parameters, not perform floating-point division in their heads! In shared/tools.js, we define 4 deterministic JavaScript functions that Gemma 4 calls via Ollama's native tools API.">
+      <div>
+        <div class="eyebrow blue">🛠️ Engineering Deep Dive • shared/tools.js</div>
+        <h2>The 4 Deterministic <span class="text-blue">VC &ldquo;Bullshit Detector&rdquo; Tools</span></h2>
+        <p class="lead">
+          Let Gemma 4 extract the numbers from audio &amp; slides — let deterministic Node.js functions execute the exact math!
+        </p>
+
+        <div class="grid-4" style="margin-top: 14px;">
+          <div class="card border-blue">
+            <h3>1. <code>audit_unit_economics</code></h3>
+            <p>Computes <code>(monthlyBurn × 12) / netNewArr</code> and <code>ltv / cac</code>. Flags <strong>FAIL</strong> if Burn Multiple &gt; 3.0x or deviates from spoken claim by &gt; 0.25x.</p>
+          </div>
+
+          <div class="card border-orange">
+            <h3>2. <code>verify_tam_math</code></h3>
+            <p>Computes bottom-up TAM: <code>customers × annualPrice</code>. Flags <strong>FAIL (TAM_INFLATED)</strong> if claimed TAM exceeds bottom-up math by &gt; 1.25x.</p>
+          </div>
+
+          <div class="card border-sky">
+            <h3>3. <code>check_slide_density</code></h3>
+            <p>Audits words &amp; data points per slide. Flags <strong>FAIL (WALL_OF_TEXT)</strong> if &gt; 75 words (e.g., Slide #3 with 96 words) and recommends <code>1120</code> tokens.</p>
+          </div>
+
+          <div class="card border-yellow">
+            <h3>4. <code>flag_buzzword_overload</code></h3>
+            <p>Scans transcript &amp; slides for empty VC buzzwords (<em>quantum-ready, autonomous mesh, infinite LTV</em>) and calculates hits/minute.</p>
+          </div>
+        </div>
+
+        <div class="code-window" style="margin-top: 8px;">
+          <div class="code-header">
+            <div class="window-dots"><span></span><span></span><span></span></div>
+            <span>shared/tools.js — Deterministic Burn Multiple &amp; LTV:CAC Verification</span>
+          </div>
+          <div class="code-body" style="padding: 10px 16px;"><span class="kw">const</span> annualNetBurnUsd = monthlyNetBurnUsd * <span class="fn">12</span>;
+<span class="kw">const</span> actualBurnMultiple = Number((annualNetBurnUsd / netNewArrUsd).<span class="fn">toFixed</span>(<span class="fn">2</span>));
+<span class="kw">const</span> actualLtvCacRatio  = Number((ltvUsd / cacUsd).<span class="fn">toFixed</span>(<span class="fn">2</span>));
+<span class="kw">const</span> isCritical = actualBurnMultiple &gt; <span class="fn">3.0</span> || actualLtvCacRatio &lt; <span class="fn">1.5</span> || burnDiscrepancy &gt; <span class="fn">0.5</span>;</div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">🧪 All 4 tools are unit-tested in <span style="color: var(--ptw-yellow); font-family: var(--font-mono);">tests/tools.test.js</span></div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn" onclick="nextSlide()">Run Step 4 Tool Loop ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 12: STEP 4 (55-75m) — SPRINT 3: OLLAMA TOOL LOOP & VERDICT   -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="In Step 4 (cd step-04-tools && npm start), we wire the 2-turn Ollama tool-calling loop. Turn 1 sends the pitch context + OLLAMA_VC_TOOLS definitions; Gemma 4 emits tool_calls; our Node.js code executes executeVcTool() and appends role: 'tool' messages; Turn 2 produces the final InvestmentCommitteeVerdictSchema!">
+      <div>
+        <div class="eyebrow green">⚙️ Step 4 (55–75m) • Sprint 3 • step-04-tools/</div>
+        <h2>Multi-Turn <span class="text-blue">Ollama Tool Loop</span> &amp; Final IC Verdict</h2>
+        <p class="lead">
+          File: <span class="badge-inline">step-04-tools/index.js</span> &amp; <span class="badge-inline">shared/client.js</span> • Grounding the Final Verdict in Deterministic Math
+        </p>
+
+        <div class="grid-2" style="margin-top: 12px;">
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>shared/client.js — 2-Turn Ollama Tool Loop</span>
+            </div>
+            <div class="code-body"><span class="cmt">// Turn 1: Request tool calls from gemma4:e2b</span>
+<span class="kw">const</span> turn1 = <span class="kw">await</span> <span class="fn">ollamaChat</span>({
+  messages: toolMessages,
+  tools: OLLAMA_VC_TOOLS,
+  think: <span class="kw">true</span>
+});
+
+<span class="cmt">// Execute each requested tool deterministically in Node.js</span>
+<span class="kw">for</span> (<span class="kw">const</span> call <span class="kw">of</span> turn1.message.tool_calls) {
+  <span class="kw">const</span> result = <span class="fn">executeVcTool</span>(call.function.name, call.function.arguments);
+  toolMessages.<span class="fn">push</span>({
+    role: <span class="str">'tool'</span>,
+    tool_name: call.function.name,
+    content: JSON.<span class="fn">stringify</span>(result)
+  });
+}
+
+<span class="cmt">// Turn 2: Synthesize final Zod-validated IC Verdict</span></div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="card border-red">
+              <h3>📋 Tool Execution Results on <em>CloudMetrics Pro</em></h3>
+              <ul>
+                <li><code>audit_unit_economics</code> ➔ <strong>FAIL</strong> (Actual Burn Multiple <strong>3.50x</strong> vs 1.0x claimed; LTV:CAC <strong>1.70x</strong> vs 4.8x).</li>
+                <li><code>verify_tam_math</code> ➔ <strong>FAIL</strong> ($90B claimed vs <strong>$450M bottom-up</strong> = 200x inflation).</li>
+                <li><code>check_slide_density</code> ➔ <strong>FAIL</strong> (Slide #3 has <strong>96 words</strong> — Wall of Text).</li>
+                <li><code>flag_buzzword_overload</code> ➔ <strong>PASS</strong> (Only 2 buzzwords).</li>
+              </ul>
+            </div>
+
+            <div class="card border-blue">
+              <h3>🎯 Final Grounded Output (<span class="badge-inline">InvestmentCommitteeVerdictSchema</span>)</h3>
+              <p>Combines <code>verdict</code> (<span class="badge-inline">HARD_PASS</span> / <span class="badge-inline">DIG_DEEPER</span> / <span class="badge-inline">INVEST</span>), <code>overallIcScore</code>, <code>liveRoast</code>, and <code>topFixRecommendation</code>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">▶️ Run Sprint 3 (Deterministic VC Tools &amp; Final Verdict):</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('cd step-04-tools && npm start')">📋 cd step-04-tools &amp;&amp; npm start</button>
+          <button class="cmd-btn" onclick="copyCmd('npm run step4')">📋 npm run step4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 13: STEP 5 (75-90m) — THE LIVE PITCH ARENA WEB UI            -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Now for our grand finale (75-90m): cd step-05-arena && npm start! This launches the Express SSE backend on port 4000 and the Portugal Tech Week React UI on port 5173. Attendees can click the 3 demo presets, record a live 30-second pitch from their laptop mic, or upload custom WAV audio and PNG slides!">
+      <div>
+        <div class="eyebrow yellow">🏆 Step 5 (75–90m) • Finale • step-05-arena/</div>
+        <h2>The Live <span class="text-blue">Portugal Tech Week</span> Pitch Arena UI</h2>
+        <p class="lead">
+          Full-stack Express + React 19 + Vite + Tailwind CSS v4 Web App at <span class="badge-inline">http://localhost:5173</span> (API at <span class="badge-inline">:4000</span>).
+        </p>
+
+        <div class="grid-3" style="margin-top: 14px;">
+          <div class="card border-blue">
+            <h3><img src="./assets/tile-sky.svg" alt="" class="tile-icon" /> 1. Record or Upload Audio</h3>
+            <p>
+              Use <strong>● Record 30s Pitch (Mic)</strong> (browser Web Audio resampled in-memory to <span class="badge-inline">16kHz</span> mono WAV) <strong>or</strong> click <strong>↑ Upload Audio (.wav)</strong>, or load a 1-click PTW Demo Preset.
+            </p>
+          </div>
+
+          <div class="card border-orange">
+            <h3><img src="./assets/tile-orange.svg" alt="" class="tile-icon" /> 2. Upload Slides &amp; Set Budgets</h3>
+            <p>
+              Drag &amp; drop up to <strong>3 slide images (PNG/JPG/WEBP)</strong>, edit slide titles, and toggle each slide between <strong>280 Tokens (Layout)</strong> and <strong>1,120 Tokens (Dense)</strong>.
+            </p>
+          </div>
+
+          <div class="card border-yellow">
+            <h3><img src="./assets/tile-yellow.svg" alt="" class="tile-icon" /> 3. Live SSE Streaming Verdict</h3>
+            <p>
+              Watch real-time Server-Sent Events (<span class="badge-inline">POST /api/pitch/analyze-stream</span>) stream Gemma 4&apos;s <span class="badge-inline">&lt;think&gt;</span> trace, tool badges, contradictions, and Live Roast!
+            </p>
+          </div>
+        </div>
+
+        <div class="disclaimer-strip">
+          <div>
+            <strong>ℹ️ BUILT-IN UI DISCLAIMER DIALOG:</strong> The web app includes the <strong>Workshop Disclaimer Dialog</strong> reminding everyone that this is a workshop guide to better pitch your project, not a real competition result.
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">🚀 Launch the Full Portugal Tech Week Pitch Arena Web App:</div>
+        <div class="cmd-buttons">
+          <button class="cmd-btn yellow" onclick="copyCmd('cd step-05-arena && npm start')">📋 cd step-05-arena &amp;&amp; npm start</button>
+          <a href="http://localhost:5173" target="_blank" rel="noreferrer" class="cmd-btn">🌐 Open http://localhost:5173</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- SLIDE 14: WRAP-UP, CHEAT SHEET & CONNECT WITH NUNO JOÃO ANDRADE    -->
+    <!-- ================================================================== -->
+    <section class="slide" data-notes="Thank you for joining this Portugal Tech Week 2026 workshop! Here is your complete command cheat sheet so you can continue experimenting with your own startup pitch deck at home. Connect with me on LinkedIn at www.linkedin.com/in/nuno-andrade-964b2416 and check out nja.dev!">
+      <div>
+        <div class="eyebrow blue">🇵🇹 Obrigado! • Portugal Tech Week 2026 Wrap-Up</div>
+        <h2>Workshop <span class="text-blue">Cheat Sheet</span> &amp; Stay Connected</h2>
+        <p class="lead">
+          You now have a complete, 100% local multimodal AI pitch coach running on your own machine with <span class="badge-inline">gemma4:e2b</span> and Ollama.
+        </p>
+
+        <div class="grid-2" style="margin-top: 14px;">
+          <div class="code-window">
+            <div class="code-header">
+              <div class="window-dots"><span></span><span></span><span></span></div>
+              <span>Complete Workshop Command Cheat Sheet</span>
+            </div>
+            <div class="code-body"><span class="cmt"># Run automated test suite (11/11 tests):</span>
+npm test
+
+<span class="cmt"># Run each workshop step independently:</span>
+cd step-01-setup &amp;&amp; npm start          <span class="cmt"># 20s Roast</span>
+cd step-02-narrative &amp;&amp; npm start      <span class="cmt"># Audio Narrative Arc</span>
+cd step-03-contradictions &amp;&amp; npm start <span class="cmt"># 280 vs 1120 Tokens</span>
+cd step-04-tools &amp;&amp; npm start          <span class="cmt"># 4 Deterministic VC Tools</span>
+cd step-05-arena &amp;&amp; npm start          <span class="cmt"># Full PTW Web Arena UI</span>
+
+<span class="cmt"># Open these workshop slides anytime:</span>
+npm run slides</div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 12px;">
+            <div class="card border-blue">
+              <h3>👤 Connect with Nuno João Andrade</h3>
+              <div style="display: flex; align-items: center; gap: 14px; margin-top: 4px;">
+                <img src="./assets/avatar_photo.jpeg" alt="Nuno João Andrade" style="width: 68px; height: 68px; border-radius: 50%; object-fit: cover; border: 3px solid var(--ptw-blue);" />
+                <div>
+                  <div style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--ptw-dark);">
+                    Nuno João Andrade
+                  </div>
+                  <div style="font-size: 0.85rem; color: var(--ptw-blue); font-weight: 700;">
+                    Senior Dev &amp; Cloud Expert • Google Developer Expert (GDE)
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.78rem; margin-top: 4px;">
+                    🔗 <a href="https://www.linkedin.com/in/nuno-andrade-964b2416" target="_blank" rel="noreferrer" style="color: var(--ptw-blue); font-weight: 700;">www.linkedin.com/in/nuno-andrade-964b2416</a>
+                  </div>
+                  <div style="font-family: var(--font-mono); font-size: 0.78rem;">
+                    🌐 <a href="https://nja.dev" target="_blank" rel="noreferrer" style="color: var(--ptw-orange); font-weight: 700;">https://nja.dev</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border-yellow">
+              <h3>🎯 Key Engineering Takeaways</h3>
+              <ul>
+                <li><strong>Native Audio + Vision:</strong> <span class="badge-inline">gemma4:e2b</span> processes 16kHz WAV &amp; PNG slides locally in one pass.</li>
+                <li><strong>Right-Size Vision Tokens:</strong> Use <span class="badge-inline">280</span> for layout slides and <span class="badge-inline">1,120</span> for dense tables/footnotes.</li>
+                <li><strong>Deterministic Tool Calling:</strong> Delegate financial ratios &amp; TAM math to verified code tools.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cmd-bar">
+        <div class="cmd-bar-label">🇵🇹 Thank you, Portugal Tech Week! Connect on LinkedIn:</div>
+        <div class="cmd-buttons">
+          <a href="https://www.linkedin.com/in/nuno-andrade-964b2416" target="_blank" rel="noreferrer" class="cmd-btn yellow">🔗 www.linkedin.com/in/nuno-andrade-964b2416</a>
+          <button class="cmd-btn" onclick="copyCmd('https://www.linkedin.com/in/nuno-andrade-964b2416')">📋 Copy LinkedIn</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Speaker Notes Drawer (Toggle with 'S' key or button) -->
+  <aside id="speakerNotesDrawer" class="speaker-notes-drawer">
+    <div class="speaker-notes-header">
+      <span>🎙️ Speaker Notes — Nuno João Andrade (Press 'S' to toggle)</span>
+      <span id="notesSlideLabel">Slide 1 / 14</span>
+    </div>
+    <div id="speakerNotesContent" class="speaker-notes-content"></div>
+  </aside>
+
+  <!-- Footer Navigation Bar -->
+  <footer class="deck-footer">
+    <div class="progress-wrap">
+      <span id="slideCounter" class="slide-counter">1 / 14</span>
+      <div class="progress-bar-bg">
+        <div id="progressBarFill" class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <div style="font-size: 0.82rem; color: var(--ptw-muted); font-weight: 600;">
+      Use <kbd class="badge-inline">←</kbd> <kbd class="badge-inline">→</kbd> or <kbd class="badge-inline">Space</kbd> to navigate • <kbd class="badge-inline">S</kbd> Speaker Notes • <kbd class="badge-inline">F</kbd> Fullscreen
+    </div>
+
+    <div class="nav-controls">
+      <button id="btnNotes" class="nav-btn" onclick="toggleNotes()">🎙️ Notes (S)</button>
+      <button class="nav-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+      <button class="nav-btn" onclick="prevSlide()">← Prev</button>
+      <button class="nav-btn" onclick="nextSlide()">Next →</button>
+    </div>
+  </footer>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    slides.forEach((slideEl) => {
+      const wm = document.createElement('div');
+      wm.className = 'ptw-watermark';
+      wm.setAttribute('aria-hidden', 'true');
+      wm.innerHTML = `<img src="./assets/ptw-azulejo-watermark.svg" alt="" />`;
+      slideEl.prepend(wm);
+    });
+
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+    let notesOpen = false;
+
+    const counterEl = document.getElementById('slideCounter');
+    const progressEl = document.getElementById('progressBarFill');
+    const drawerEl = document.getElementById('speakerNotesDrawer');
+    const notesContentEl = document.getElementById('speakerNotesContent');
+    const notesLabelEl = document.getElementById('notesSlideLabel');
+    const btnNotesEl = document.getElementById('btnNotes');
+    const toastEl = document.getElementById('copyToast');
+
+    function updateSlideView() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentIndex);
+      });
+      const slideNum = currentIndex + 1;
+      counterEl.textContent = `${slideNum} / ${totalSlides}`;
+      progressEl.style.width = `${(slideNum / totalSlides) * 100}%`;
+
+      const activeSlide = slides[currentIndex];
+      const noteText = activeSlide.getAttribute('data-notes') || 'No speaker notes for this slide.';
+      notesContentEl.textContent = noteText;
+      notesLabelEl.textContent = `Slide ${slideNum} / ${totalSlides}`;
+      window.location.hash = `slide-${slideNum}`;
+    }
+
+    function nextSlide() {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateSlideView();
+      }
+    }
+
+    function prevSlide() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlideView();
+      }
+    }
+
+    function toggleNotes() {
+      notesOpen = !notesOpen;
+      drawerEl.classList.toggle('open', notesOpen);
+      btnNotesEl.classList.toggle('active', notesOpen);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function copyCmd(cmdText) {
+      navigator.clipboard.writeText(cmdText).then(() => {
+        toastEl.textContent = `✅ Copied: ${cmdText}`;
+        toastEl.classList.add('show');
+        setTimeout(() => toastEl.classList.remove('show'), 2200);
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        prevSlide();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        currentIndex = 0;
+        updateSlideView();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        currentIndex = totalSlides - 1;
+        updateSlideView();
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    });
+
+    const hashMatch = window.location.hash.match(/slide-(\d+)/);
+    if (hashMatch) {
+      const parsed = parseInt(hashMatch[1], 10) - 1;
+      if (parsed >= 0 && parsed < totalSlides) {
+        currentIndex = parsed;
+      }
+    }
+    updateSlideView();
+  </script>
+</body>
+</html>

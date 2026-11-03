@@ -1,0 +1,9 @@
+{
+  "name": "step-03-contradictions",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  }
+}

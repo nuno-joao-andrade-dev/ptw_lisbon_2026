@@ -1,0 +1,9 @@
+{
+  "name": "step-04-tools",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  }
+}

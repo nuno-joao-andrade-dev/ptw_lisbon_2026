@@ -1,0 +1,42 @@
+{
+  "name": "ptw-gemma4-pitch-critic",
+  "version": "1.0.0",
+  "description": "Portugal Tech Week Workshop: Multimodal Pitch & Deck Critic with Gemma 4 + Local Ollama (Node.js & React)",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "step:1": "node step-01-setup/index.js",
+    "step:2": "node step-02-narrative/index.js",
+    "step:3": "node step-03-contradictions/index.js",
+    "step:4": "node step-04-tools/index.js",
+    "step:5": "node step-05-arena/index.js",
+    "step1": "node step-01-setup/index.js",
+    "step2": "node step-02-narrative/index.js",
+    "step3": "node step-03-contradictions/index.js",
+    "step4": "node step-04-tools/index.js",
+    "step5": "node step-05-arena/index.js",
+    "build:ui": "vite build --config step-05-arena/vite.config.js",
+    "fixtures": "node scripts/generate_fixtures.js",
+    "generate:fixtures": "node scripts/generate_fixtures.js",
+    "slides": "node scripts/serve-slides.js",
+    "generate:slides": "node scripts/generate-workshop-slides.js",
+    "capture:slides": "node scripts/capture-slide-screenshots.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.4",
+    "@vitejs/plugin-react": "^6.2.1",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "multer": "^2.5.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.4",
+    "vite": "^8.3.5",
+    "zod": "^4.6.7"
+  }
+}

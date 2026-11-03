@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" preserveAspectRatio="xMaxYMax slice" fill="none">
+  <defs>
+    <radialGradient id="ptwGlowBlue" cx="0.88" cy="0.82" r="0.45">
+      <stop offset="0%" stop-color="#283CC8" stop-opacity="0.08" />
+      <stop offset="60%" stop-color="#4D9DE0" stop-opacity="0.04" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="ptwGlowGold" cx="0.92" cy="0.2" r="0.35">
+      <stop offset="0%" stop-color="#F9E11B" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="680" fill="url(#ptwGlowBlue)" />
+  <rect width="1200" height="680" fill="url(#ptwGlowGold)" />
+
+  <!-- Subtle Portuguese Azulejo Geometric Grid in Bottom-Right Corner -->
+  <g transform="translate(880, 380)" opacity="0.13">
+    <!-- Tile 1 (Sky Blue Azulejo) -->
+    <rect x="0" y="140" width="130" height="130" rx="14" stroke="#4D9DE0" stroke-width="3" fill="#4D9DE0" fill-opacity="0.08" />
+    <circle cx="65" cy="205" r="42" stroke="#283CC8" stroke-width="2.5" />
+    <path d="M65 152 L80 190 L118 205 L80 220 L65 258 L50 220 L12 205 L50 190 Z" stroke="#283CC8" stroke-width="2" fill="#4D9DE0" fill-opacity="0.18" />
+
+    <!-- Tile 2 (Orange Azulejo) -->
+    <rect x="150" y="140" width="130" height="130" rx="14" stroke="#F26419" stroke-width="3" fill="#F26419" fill-opacity="0.08" />
+    <path d="M215 152 L268 205 L215 258 L162 205 Z" stroke="#F26419" stroke-width="2.5" fill="#F26419" fill-opacity="0.15" />
+    <circle cx="215" cy="205" r="20" stroke="#283CC8" stroke-width="2.5" />
+
+    <!-- Tile 3 (Yellow/Royal Blue Azulejo) -->
+    <rect x="150" y="-10" width="130" height="130" rx="14" stroke="#283CC8" stroke-width="3" fill="#F9E11B" fill-opacity="0.16" />
+    <path d="M215 4 L232 42 L270 55 L232 68 L215 106 L198 68 L160 55 L198 42 Z" stroke="#283CC8" stroke-width="2.5" fill="#283CC8" fill-opacity="0.12" />
+  </g>
+</svg>

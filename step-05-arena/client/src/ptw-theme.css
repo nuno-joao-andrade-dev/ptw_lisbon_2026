@@ -1,0 +1,271 @@
+@import "tailwindcss";
+
+:root {
+  /* Official Portugal Tech Week Elementor & Agenda Tokens (post-95.css & STYLE 5) */
+  --ptw-dark: #131313;
+  --ptw-card: #0f0d30;
+  --ptw-surface: #08071a;
+  --ptw-blue: #283cc8;
+  --ptw-sky: #4e9de0;
+  --ptw-tile-sky: #4d9de0;
+  --ptw-orange: #ff7400;
+  --ptw-tile-orange: #f26419;
+  --ptw-yellow: #feff00;
+  --ptw-cta-yellow: #f9e11b;
+  --ptw-date: #ffc017;
+  --ptw-green: #61ce70;
+  --ptw-red: #ff3b5c;
+  --ptw-white: #ffffff;
+  --ptw-muted: #acacac;
+
+  --font-display: "Sofia Sans", sans-serif;
+  --font-ticker: "Poppins", sans-serif;
+  --font-body: "Nunito", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+body {
+  background-color: var(--ptw-dark);
+  background-image: url("/ptw/bg-ptw.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--ptw-white);
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-ticker {
+  font-family: var(--font-ticker);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+}
+
+/* Official PTW Sticky White Navbar (post-730.css) */
+.ptw-navbar {
+  background-color: #ffffff;
+  color: #131313;
+  height: 80px;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ptw-nav-link {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  color: #131313;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ptw-nav-link:hover {
+  color: #283cc8;
+}
+
+/* Official PTW Hero Frame & Display Typography (post-2205.css) */
+.ptw-hero-banner {
+  position: relative;
+  background: linear-gradient(180deg, rgba(15, 13, 48, 0.72) 0%, rgba(19, 19, 19, 0.55) 100%);
+  border: 2px solid rgba(40, 60, 200, 0.65);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+}
+
+.ptw-hero-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+/* Official PTW Scrolling Cities Ticker (STYLE 15 & STYLE 19) */
+.city-ticker {
+  width: 100%;
+  overflow: hidden;
+  background: rgba(15, 13, 48, 0.92);
+  border-top: 1px solid rgba(40, 60, 200, 0.55);
+  border-bottom: 1px solid rgba(40, 60, 200, 0.55);
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ptw-scroll 38s linear infinite;
+}
+
+.ticker-content {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.ticker-content span {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ticker);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  margin-right: 26px;
+}
+
+.ticker-content svg {
+  width: 16px;
+  height: 16px;
+  margin-left: 26px;
+  fill: #ffd700;
+  flex-shrink: 0;
+}
+
+@keyframes ptw-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Official PTW Agenda / Palace Card (STYLE 5 .etn-event-item) */
+.ptw-card {
+  background-color: var(--ptw-card);
+  border: 2px solid rgba(40, 60, 200, 0.65);
+  border-radius: 12px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ptw-card:hover {
+  border-color: var(--ptw-blue);
+}
+
+/* Official PTW Primary CTA Button (.btn-stay-updated / 3c8bb666) */
+.ptw-btn-primary {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  background-color: var(--ptw-blue);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 14px 32px;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.ptw-btn-primary:hover:not(:disabled) {
+  background-color: var(--ptw-cta-yellow);
+  color: #131313;
+  transform: scale(1.02);
+}
+
+.ptw-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Official PTW Secondary Outline Button (11e3103) */
+.ptw-btn-outline {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  padding: 10px 20px;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+.ptw-btn-outline:hover:not(:disabled) {
+  background-color: var(--ptw-cta-yellow);
+  color: #131313;
+  border-color: var(--ptw-cta-yellow);
+  transform: scale(1.02);
+}
+
+/* Official PTW Agenda Primary Filter Pill (.ptw-agenda__btn from STYLE 5) */
+.ptw-agenda-btn {
+  appearance: none;
+  border: 2px solid transparent;
+  background: #000000;
+  color: var(--ptw-orange);
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.15;
+  cursor: pointer;
+  transition: transform 0.06s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ptw-agenda-btn:hover {
+  border-color: var(--ptw-blue);
+  color: var(--ptw-orange);
+}
+
+.ptw-agenda-btn.is-active {
+  background: #000000;
+  border-color: var(--ptw-yellow);
+  color: var(--ptw-yellow);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Official PTW Agenda Track / Budget Pill (.ptw-agenda__btn--track from STYLE 5) */
+.ptw-agenda-track-btn {
+  appearance: none;
+  background: var(--ptw-card);
+  color: var(--ptw-sky);
+  border: 2px solid rgba(78, 157, 224, 0.35);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ptw-agenda-track-btn:hover {
+  border-color: var(--ptw-blue);
+  color: #ffffff;
+}
+
+.ptw-agenda-track-btn.is-active {
+  background: var(--ptw-card);
+  border-color: var(--ptw-blue);
+  color: #ffffff;
+  box-shadow: 0 0 0 1px var(--ptw-blue);
+}
+
+/* Official PTW Agenda Dashed Action / Upload Zone (.ptw-agenda__clear from STYLE 5) */
+.ptw-dashed-zone {
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px dashed rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.ptw-dashed-zone:hover {
+  border-color: var(--ptw-cta-yellow);
+  color: var(--ptw-cta-yellow);
+}
